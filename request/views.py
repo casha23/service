@@ -1,12 +1,15 @@
 from user.permissions import IsMasterUser
-from rest_framework import mixins, viewsets
+from rest_framework import generics, mixins, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Request
-from .permissions import IsNewRequest
-from .serializers import ReguestForMasterSerializer, ReguestForUserSerializer
+from .models import Invoice, Request
+from .permissions import IsNewRequest, IsUnpaidInvoice
+from .serializers import (
+    InvoiceSerializer, ReguestForMasterSerializer, ReguestForUserSerializer
+    )
 
+# APIs for Request
 
 class RequestViewSet(viewsets.ModelViewSet):
     """
@@ -20,7 +23,7 @@ class RequestViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action == 'destroy':
-            permission_classes = [IsNewRequest]
+            permission_classes = [IsAuthenticated, IsNewRequest]
         else:
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
@@ -29,10 +32,10 @@ class RequestViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-class RequestListRetrieveViewSet(mixins.ListModelMixin,
-                                mixins.RetrieveModelMixin,
-                                mixins.UpdateModelMixin,
-                                viewsets.GenericViewSet):
+class RequestListRetrieveUpdateViewSet(mixins.ListModelMixin,
+                                       mixins.RetrieveModelMixin,
+                                       mixins.UpdateModelMixin,
+                                       viewsets.GenericViewSet):
     """
     A viewset that provides `retrieve`, `update`, and `list` actions.
     """
@@ -40,3 +43,39 @@ class RequestListRetrieveViewSet(mixins.ListModelMixin,
     queryset = Request.objects.all()
     serializer_class = ReguestForMasterSerializer
     permission_classes = [IsMasterUser]
+
+
+# APIs for Invoice
+
+class InvoiceCreateListRetrieveUpdateViewSet(mixins.CreateModelMixin,
+                                             mixins.ListModelMixin,
+                                             mixins.RetrieveModelMixin,
+                                             mixins.UpdateModelMixin,
+                                             viewsets.GenericViewSet):
+    """
+    A viewset that provides `create`, `retrieve`, `update`, and `list` actions.
+    """
+    
+    queryset = Invoice.objects.all().select_related('master', 'request__user')
+    serializer_class = InvoiceSerializer
+
+    def get_permissions(self):
+        if self.action in ['destroy', 'partial_update', 'update']:
+            permission_classes = [IsMasterUser, IsUnpaidInvoice]
+        else:
+            permission_classes = [IsMasterUser]
+        return [permission() for permission in permission_classes]
+
+    def perform_create(self, serializer):
+        serializer.save(master=self.request.user)
+
+
+class InvoiceForUserList(generics.ListAPIView):
+    """
+    List with invoices for user
+    """
+    
+    serializer_class = InvoiceSerializer
+
+    def get_queryset(self):
+        return Invoice.objects.select_related('request__user').filter(request__user=self.request.user)
