@@ -1,3 +1,4 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from user.permissions import IsMasterUser
 from rest_framework import generics, mixins, viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -43,6 +44,8 @@ class RequestListRetrieveUpdateViewSet(mixins.ListModelMixin,
     queryset = Request.objects.all()
     serializer_class = ReguestForMasterSerializer
     permission_classes = [IsMasterUser]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['user', 'phone_model', 'problem_description', 'status']
 
 
 # APIs for Invoice
