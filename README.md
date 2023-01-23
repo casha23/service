@@ -59,6 +59,15 @@ foo@bar:~/service$ ./manage.py runserver
 ```
 
 Command for change Invoice status from Unpaid to Paid-up
+
 ```console
 foo@bar:~/service$ ./manage.py pay_for_invoice <invoice_id>
+```
+
+## Testing
+
+Run pytest
+
+```console
+foo@bar:~/service$ pytest
 ```
