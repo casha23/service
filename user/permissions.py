@@ -7,4 +7,5 @@ class IsMasterUser(permissions.BasePermission):
     """
 
     def has_permission(self, request, view):
-        return request.user.is_master
+        user = request.user
+        return user.is_authenticated and user.is_master

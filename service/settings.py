@@ -42,10 +42,11 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'django_filters',
-    'rest_framework',
-    'rest_framework.authtoken',
     'rest_auth',
     'rest_auth.registration',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_framework_swagger',
 
     'request',
     'user',
@@ -78,6 +79,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                'staticfiles': 'django.templatetags.static',
+            }
         },
     },
 ]
@@ -152,6 +156,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
     # Pagination
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10
@@ -171,3 +176,9 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = 'phone_number'
 # Email
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+# Swagger
+
+LOGIN_URL = 'rest-auth/login'
+LOGOUT_URL = 'rest-auth/logout'
