@@ -3,7 +3,6 @@ from rest_framework import serializers
 
 from .models import Invoice, Request
 
-
 # Serializers for Request
 
 class ReguestForUserSerializer(serializers.ModelSerializer):

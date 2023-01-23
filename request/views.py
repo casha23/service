@@ -64,7 +64,7 @@ class InvoiceCreateListRetrieveUpdateViewSet(mixins.CreateModelMixin,
     serializer_class = InvoiceSerializer
 
     def get_permissions(self):
-        if self.action in ['destroy', 'partial_update', 'update']:
+        if self.action in {'partial_update', 'update'}:
             permission_classes = [IsMasterUser, IsUnpaidInvoice]
         else:
             permission_classes = [IsMasterUser]

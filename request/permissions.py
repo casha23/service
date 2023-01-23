@@ -2,7 +2,6 @@ from rest_framework import permissions
 
 from .models import Invoice, Request
 
-
 # Permissions for Request
 
 class IsNewRequest(permissions.BasePermission):

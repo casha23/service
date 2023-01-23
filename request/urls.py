@@ -6,7 +6,6 @@ from .views import (
     InvoiceCreateListRetrieveUpdateViewSet, InvoiceForUserList, RequestListRetrieveUpdateViewSet, RequestViewSet
     )
 
-
 router = DefaultRouter()
 router.register(r'requests', RequestViewSet, basename='request-for-user')
 router.register(r'master-requests', RequestListRetrieveUpdateViewSet, basename='request-for-master')

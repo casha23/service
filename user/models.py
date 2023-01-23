@@ -6,7 +6,7 @@ from django.db import models
 class CustomUserManager(UserManager):
     def create_user(self, phone_number, email, password=None):
         """
-        Creates and saves a User with the given phonen umber, email and password.
+        Creates and saves a User with the given phone number, email and password.
         """
         if not phone_number:
             raise ValueError('Users must phone number')
@@ -22,7 +22,7 @@ class CustomUserManager(UserManager):
 
     def create_superuser(self, phone_number, email, password):
         """
-        Creates and saves a superuser with the given phonen umber, email and password.
+        Creates and saves a superuser with the given phone number, email and password.
         """
         user = self.create_user(
             phone_number=phone_number,
